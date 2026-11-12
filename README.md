@@ -46,13 +46,13 @@ Habla con el alfabeto radiotelefónico que se usa en México y la app convierte 
 palabras en caracteres. Entiende:
 
 - **Letras:** alfa, bravo, coca, delta, eco, **fox**, **golfo**, hotel, **indio**,
-  julieta, kilo, lima, **metro**, **néctar**, oscar, papa, quebec, romeo, sierra,
-  tango, **unión**, víctor, whisky, **xóchitl**, yankee, zulu.
+  julieta, kilo, **litro**, **metro**, **néctar**, **oso**, papa, quebec, romeo,
+  sierra, tango, **unión**, víctor, whisky, **xóchitl**, yanqui, zulu.
 - **Números:** **negativo, primero, segundo, tercero, cuarto, quinto, sexto,
   séptimo, octavo, noveno**.
 - **Alias:** también acepta los nombres del alfabeto OTAN (foxtrot, golf, india,
-  mike, noviembre, uniforme, equis) y los cardinales (cero, uno, dos…), por si el
-  reconocedor devuelve uno u otro.
+  lima, mike, noviembre, oscar, uniforme, equis, yankee) y los cardinales
+  (cero, uno, dos…), por si el reconocedor devuelve uno u otro.
 - **Nombres de letra:** hache, jota, ka, ele, eme, ene, pe, cu, erre, uve, ye, zeta.
 - **Letras sueltas y VIN pegados:** `1 H G B H 4 1 J X M N 1 0 9 1 8 6` o `1HG-BH41-JXMN109186`.
 - **I, O y Q** se interpretan como 1 y 0, igual que al teclearlos.

@@ -10,8 +10,8 @@ import { parseDictation, normalizeDictation } from '../app/src/dictation.js';
 const parse = (texto) => parseDictation(texto).chars.join('');
 
 test('alfabeto radiotelefónico de México', () => {
-  assert.equal(parse('alfa bravo coca delta eco fox golfo hotel indio julieta kilo lima'), 'ABCDEFGH1JKL');
-  assert.equal(parse('metro nectar oscar papa quebec romeo sierra tango union victor whisky'), 'MN0P0RSTUVW');
+  assert.equal(parse('alfa bravo coca delta eco fox golfo hotel indio julieta kilo litro'), 'ABCDEFGH1JKL');
+  assert.equal(parse('metro nectar oso papa quebec romeo sierra tango union victor whisky'), 'MN0P0RSTUVW');
   assert.equal(parse('xochitl yankee zulu'), 'XYZ');
 });
 
@@ -30,6 +30,7 @@ test('VIN completo con el alfabeto mexicano', () => {
 
 test('los nombres anteriores siguen funcionando como alias', () => {
   assert.equal(parse('foxtrot golf india mike noviembre uniforme equis'), 'FG1MNUX');
+  assert.equal(parse('lima oscar'), 'L0');
   assert.equal(parse('cero uno dos tres cuatro cinco seis siete ocho nueve'), '0123456789');
 });
 
@@ -117,4 +118,5 @@ test('muchas alternativas del reconocedor no duplican caracteres', () => {
   assert.equal(r.chars.length, 3);
   assert.equal(r.chars.join(''), 'ABC');
 });
+
 
