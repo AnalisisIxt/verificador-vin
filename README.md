@@ -46,8 +46,8 @@ Habla con el alfabeto radiotelefónico que se usa en México y la app convierte 
 palabras en caracteres. Entiende:
 
 - **Letras:** alfa, bravo, coca, delta, eco, **fox**, **golfo**, hotel, **indio**,
-  julieta, kilo, **litro**, **metro**, **néctar**, **oso**, papa, quebec, romeo,
-  sierra, tango, **unión**, víctor, whisky, **xóchitl**, yanqui, zulu.
+  julieta, kilo, **litro** (o lima), **metro**, **néctar**, **oso** (u oscar), papa,
+  quebec, romeo, sierra, tango, **unión**, víctor, whisky, **xóchitl**, yanqui, zulu.
 - **Números:** **negativo, primero, segundo, tercero, cuarto, quinto, sexto,
   séptimo, octavo, noveno**.
 - **Alias:** también acepta los nombres del alfabeto OTAN (foxtrot, golf, india,

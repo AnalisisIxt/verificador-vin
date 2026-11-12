@@ -181,7 +181,7 @@ export function parseDictation(text) {
 export const ALPHABET = [
   ['A', 'Alfa'], ['B', 'Bravo'], ['C', 'Coca o Charlie'], ['D', 'Delta'],
   ['E', 'Eco'], ['F', 'Fox'], ['G', 'Golfo'], ['H', 'Hotel'],
-  ['I', 'Indio'], ['J', 'Julieta'], ['K', 'Kilo'], ['L', 'Litro'],
+  ['I', 'Indio'], ['J', 'Julieta'], ['K', 'Kilo'], ['L', 'Litro o Lima'],
   ['M', 'Metro'], ['N', 'Néctar'], ['O', 'Oso'], ['P', 'Papa'],
   ['Q', 'Quebec'], ['R', 'Romeo'], ['S', 'Sierra'], ['T', 'Tango'],
   ['U', 'Unión'], ['V', 'Víctor'], ['W', 'Whisky'], ['X', 'Xóchitl'],
