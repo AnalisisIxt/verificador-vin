@@ -1,0 +1,16 @@
+# Dependencias y archivos generados
+node_modules/
+.tools/
+.npm-cache/
+.qa/
+.chrome-*/
+Chrome/
+*.log
+
+# Descargas a medias de la base de la NHTSA
+data/wmi-raw.partial.json
+
+# Sistema
+Thumbs.db
+.DS_Store
+desktop.ini

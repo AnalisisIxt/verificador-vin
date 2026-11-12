@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Verificador de VIN · comprueba y corrige los 17 caracteres</title>
+<meta name="description" content="Verifica el VIN de cualquier vehículo: valida los 17 caracteres, el dígito verificador, el año modelo y el fabricante; detecta qué carácter está mal y por qué. También lee el VIN desde una foto." />
+<meta name="theme-color" content="#0b1220" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f766e'/%3E%3Cpath d='M14 22h36v6H14zm0 14h36v6H14z' fill='%23fff' opacity='.9'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+<a class="skip" href="#resultado">Ir al resultado</a>
+
+<header class="topbar">
+  <div class="wrap topbar__inner">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 7h18M3 17h18"/><path d="M7 3v18M17 3v18" opacity=".45"/>
+        </svg>
+      </span>
+      <span class="brand__text">
+        <strong>Verificador de VIN</strong>
+        <small>17 caracteres · todas las marcas</small>
+      </span>
+    </div>
+    <nav class="topbar__nav">
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#base">Base de datos</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <h1>¿El VIN está bien capturado?</h1>
+    <p>
+      Escribe el VIN o tómalo con la cámara. La app revisa la estructura ISO&nbsp;3779,
+      el <strong>dígito verificador</strong>, el año modelo y el fabricante, y te dice
+      <strong>qué carácter está mal y por qué</strong>.
+    </p>
+  </section>
+
+  <section class="card input-card" aria-labelledby="titulo-entrada">
+    <div class="tabs" role="tablist" aria-label="Forma de captura">
+      <button id="tab-type" class="tab is-active" role="tab" aria-selected="true" aria-controls="panel-type">Teclear</button>
+      <button id="tab-scan" class="tab" role="tab" aria-selected="false" aria-controls="panel-scan">Leer de una imagen</button>
+      <button id="tab-dict" class="tab" role="tab" aria-selected="false" aria-controls="panel-dict">Dictar</button>
+    </div>
+
+    <div id="panel-type" class="panel" role="tabpanel" aria-labelledby="tab-type">
+      <label class="sr-only" for="vin0">VIN de 17 caracteres</label>
+      <div id="vin-boxes" class="vin-boxes" aria-describedby="vin-help"></div>
+      <p id="vin-help" class="hint">
+        Se admiten minúsculas, espacios y guiones: se limpian solos. No se usan las letras
+        <kbd>I</kbd>, <kbd>O</kbd> ni <kbd>Q</kbd>.
+      </p>
+
+      <div class="actions">
+        <button id="btn-demo" class="btn btn--ghost" type="button">Ejemplo</button>
+        <button id="btn-paste" class="btn btn--ghost" type="button">Pegar</button>
+        <button id="btn-clear" class="btn btn--ghost" type="button">Limpiar</button>
+        <button id="btn-copy" class="btn btn--ghost" type="button">Copiar informe</button>
+      </div>
+    </div>
+
+    <div id="panel-scan" class="panel" role="tabpanel" aria-labelledby="tab-scan" hidden>
+      <div class="scan-grid">
+        <div class="scan-drop" id="drop">
+          <input id="file" type="file" accept="image/*" capture="environment" hidden />
+          <div class="scan-drop__art" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 0-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3"/>
+              <rect x="7.5" y="9" width="9" height="6" rx="1"/>
+            </svg>
+          </div>
+          <p><strong>Toma una foto del VIN</strong></p>
+          <p class="muted small">Placa del parabrisas, marco de la puerta o etiqueta del motor. Letras grandes, luz uniforme y sin reflejos.</p>
+          <div class="actions actions--center">
+            <button id="btn-camera" class="btn" type="button">Abrir cámara</button>
+            <button id="btn-file" class="btn btn--ghost" type="button">Elegir imagen</button>
+          </div>
+        </div>
+
+        <div class="scan-preview" id="preview-wrap" hidden>
+          <div class="scan-stage" id="stage">
+            <canvas id="preview"></canvas>
+            <div id="sel" class="selection" hidden></div>
+          </div>
+          <p class="hint">Arrastra sobre la imagen para encuadrar sólo el VIN. Si no seleccionas nada se usa la imagen completa.</p>
+          <div class="actions">
+            <button id="btn-ocr" class="btn" type="button">Leer el VIN</button>
+            <button id="btn-reset" class="btn btn--ghost" type="button">Otra imagen</button>
+          </div>
+          <div class="progress" id="ocr-progress" hidden><div class="progress__bar" id="ocr-bar"></div></div>
+          <p class="status-line" id="ocr-status" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-dict" class="panel" role="tabpanel" aria-labelledby="tab-dict" hidden>
+      <div class="dict">
+        <div class="dict__head">
+          <button id="btn-mic" class="mic" type="button" aria-pressed="false">
+            <span class="mic__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <rect x="9" y="3" width="6" height="11" rx="3"/>
+                <path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>
+              </svg>
+            </span>
+            <span id="mic-label">Empezar a dictar</span>
+          </button>
+          <p class="hint">
+            Di el VIN con el alfabeto radiotelefónico: <em>“alfa, bravo, coca, primero, segundo, tercero…”</em>
+            También entiende letras sueltas, números y nombres como <em>hache</em>, <em>jota</em> o <em>xóchitl</em>.
+          </p>
+        </div>
+
+        <div id="dict-transcript" class="dict__transcript" aria-live="polite" hidden></div>
+
+        <div class="dict__meter">
+          <span id="dict-count">0 de 17 caracteres</span>
+          <span id="dict-unknown" class="dict__unknown"></span>
+        </div>
+
+        <div id="dict-preview" class="vin-strip vin-strip--dict" aria-hidden="true"></div>
+
+        <div class="actions">
+          <button id="btn-dict-use" class="btn" type="button" disabled>Usar este VIN</button>
+          <button id="btn-dict-demo" class="btn btn--ghost" type="button">Ver un ejemplo</button>
+          <button id="btn-dict-clear" class="btn btn--ghost" type="button">Borrar</button>
+        </div>
+        <p class="status-line" id="dict-status" role="status" aria-live="polite"></p>
+
+        <div class="dict__manual">
+          <label class="dict__label" for="dict-words">O escribe las palabras que te dictaron</label>
+          <div class="dict__row">
+            <input
+              id="dict-words"
+              class="dict__input"
+              type="text"
+              placeholder="alfa bravo coca primero segundo tercero…"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+            <button id="btn-dict-words" class="btn btn--ghost" type="button">Convertir</button>
+          </div>
+          <p class="hint">Sirve cuando el micrófono no está disponible: alguien te dicta por radio o teléfono y tú escribes las palabras.</p>
+        </div>
+
+        <details class="dict__diag">
+          <summary>¿No abre el micrófono?</summary>
+          <ul id="dict-diag" class="diag"></ul>
+          <div class="actions">
+            <button id="btn-mic-test" class="btn btn--ghost btn--small" type="button">Probar micrófono</button>
+          </div>
+          <div class="level" id="mic-level" hidden><span class="level__bar" id="mic-level-bar"></span></div>
+          <p class="status-line" id="mic-test-status" role="status" aria-live="polite"></p>
+          <p class="hint">
+            El dictado por voz lo pone Chrome o Edge y necesita internet. Si tu navegador no lo tiene,
+            puedes dictar con el ejemplo, escribir las palabras o capturar el VIN con la cámara.
+          </p>
+        </details>
+      </div>
+
+      <details class="dict__help">
+        <summary>Qué palabras entiende</summary>
+        <div id="alphabet" class="alphabet"></div>
+      </details>
+    </div>
+  </section>
+
+  <section id="resultado" class="result">
+    <div class="empty" id="empty-state">
+      <p><strong>Aún no hay un VIN para revisar.</strong></p>
+      <p class="muted">Escribe los 17 caracteres o lee una foto para empezar.</p>
+    </div>
+
+    <div id="report" hidden>
+
+      <div id="alert" class="alert" hidden></div>
+
+      <section class="card status-card" id="status-card">
+        <div class="status-head" role="status" aria-live="polite">
+          <span id="status-pill" class="pill">—</span>
+          <span id="status-sub" class="muted small"></span>
+        </div>
+        <div id="vin-strip" class="vin-strip" aria-hidden="true"></div>
+        <div id="structure-bar" class="structure-bar"></div>
+      </section>
+
+      <section class="card" id="decoded-card">
+        <h2>Qué dice este VIN</h2>
+        <div class="facts" id="facts"></div>
+      </section>
+
+      <section class="card" id="findings-card">
+        <h2>Diagnóstico</h2>
+        <p class="muted small" id="findings-intro"></p>
+        <ul class="findings" id="findings"></ul>
+      </section>
+
+      <section class="card" id="suggestions-card" hidden>
+        <h2>Posibles correcciones</h2>
+        <p class="muted small" id="suggestions-intro">
+          Cada opción cambia un solo carácter (o invierte dos) y hace que el control matemático cuadre.
+          Compáralas con el VIN físico antes de aceptar.
+        </p>
+        <div class="suggestions" id="suggestions"></div>
+      </section>
+
+      <section class="card" id="math-card">
+        <details>
+          <summary>Ver el cálculo del dígito verificador</summary>
+          <div id="math-body"></div>
+        </details>
+      </section>
+
+      <section class="card" id="online-card">
+        <h2>Datos adicionales del vehículo</h2>
+        <p class="muted small">
+          La marca y el país salen de la base local. Para modelo, motor y carrocería se puede
+          consultar la base pública de la NHTSA; requiere internet y sólo devuelve información
+          de vehículos comercializados en Estados Unidos.
+        </p>
+        <button id="btn-online" class="btn btn--ghost" type="button">Consultar NHTSA</button>
+        <div id="online-body"></div>
+      </section>
+
+    </div>
+  </section>
+
+  <section class="card prose" id="como-funciona">
+    <h2>Cómo se verifica un VIN</h2>
+    <p>
+      El VIN (<em>Vehicle Identification Number</em>) tiene 17 caracteres fijos por la norma
+      ISO&nbsp;3779 y no puede contener las letras <strong>I</strong>, <strong>O</strong> ni
+      <strong>Q</strong>, para que nadie las confunda con <strong>1</strong> y <strong>0</strong>.
+      Cada bloque tiene un significado:
+    </p>
+    <ul class="blocks">
+      <li><b>1–3</b> <span>WMI</span> Fabricante y país de fabricación (ISO 3780).</li>
+      <li><b>4–8</b> <span>VDS</span> Atributos del vehículo: modelo, carrocería, motor; los define cada fabricante.</li>
+      <li><b>9</b> <span>Control</span> Dígito verificador calculado con los otros 16 caracteres.</li>
+      <li><b>10</b> <span>Año</span> Código de año modelo.</li>
+      <li><b>11</b> <span>Planta</span> Planta de ensamble.</li>
+      <li><b>12–17</b> <span>Serie</span> Número secuencial de producción.</li>
+    </ul>
+    <p>
+      El <strong>dígito verificador</strong> es obligatorio en Estados Unidos, Canadá y México
+      (49&nbsp;CFR&nbsp;565). Se calcula multiplicando cada carácter por un peso fijo, sumando
+      los resultados y tomando el resto de dividir entre 11; el resto 10 se escribe
+      <strong>X</strong>. Si el resultado no coincide con la posición 9, hay al menos un carácter
+      mal capturado. En Europa, Asia y Sudamérica esa posición no se calcula, así que la app no la
+      marca como error.
+    </p>
+  </section>
+
+  <section class="card prose" id="base">
+    <h2>Base de datos de fabricantes</h2>
+    <p>
+      Los prefijos WMI se descargan del registro público de la
+      <a href="https://vpic.nhtsa.dot.gov/api/" target="_blank" rel="noreferrer">NHTSA vPIC</a>
+      y se guardan en el equipo: <span id="db-size" class="mono">—</span>.
+      La verificación funciona sin conexión; sólo la consulta de datos adicionales usa internet.
+    </p>
+    <p class="muted small">
+      Los VIN se procesan en tu navegador. Nada de lo que escribes o fotografías se envía a un servidor.
+    </p>
+  </section>
+
+  <footer class="foot">
+    <p>Herramienta de verificación técnica. No sustituye la revisión del VIN físico ni los trámites oficiales.</p>
+  </footer>
+</main>
+
+<script type="module" src="./src/ui.js"></script>
+</body>
+</html>

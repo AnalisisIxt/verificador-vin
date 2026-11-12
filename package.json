@@ -1,0 +1,14 @@
+{
+  "name": "verificador-vin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Verificador y corrector de VIN: estructura ISO 3779, dígito verificador, año modelo, fabricante y lectura desde foto.",
+  "scripts": {
+    "start": "node server.mjs --open",
+    "serve": "node server.mjs",
+    "test": "node tests/vin-core.test.mjs && node tests/dictation.test.mjs",
+    "data": "node tools/build-data.mjs"
+  },
+  "license": "MIT"
+}
