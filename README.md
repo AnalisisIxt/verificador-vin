@@ -8,6 +8,8 @@ y año modelo, y permite capturarlo escribiéndolo, leyéndolo de una foto o
 **En línea:** <https://analisisixt.github.io/verificador-vin/> — ábrela desde el
 teléfono; al servirse por HTTPS funcionan la cámara y el micrófono.
 
+<img src="docs/qr.png" alt="Código QR con el enlace a la aplicación" width="170" />
+
 ![Captura de la aplicación](docs/captura.png)
 
 ## Cómo se usa
